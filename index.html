@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=task_alt" />
+    <title>Dispenser</title>
+</head>
+<body>
+    <section class="hero" id="hero">
+        <h3>Pick One</h3>
+        <h1>Drink Menu</h1>
+        <div class="drink-menu">
+            <div class="card" id="card-1">
+                <div class="image"><img src="images/coffee.jpg" alt="coffee"></div>
+                <h2>Coffee</h2>
+            </div>
+            <div class="card">
+                <div class="image"><img src="images/fruit.jpg" alt="coffee"></div>
+                <h2>Fruit Juice</h2>
+            </div>
+        </div>
+    </section>
+    <section class="item-menu">
+        <div class="coffe" id="coffe">
+            <div class="container-coffe" id="coffe-1">
+                <p style="font-size: 25px;">apakah anda ingin membeli ini ? </p>
+                <div class="button-coffe">
+                    <button onclick="openpembelian()"><span>Iya</span></button>
+                    <button onclick="closeCoffe()"><span>Tidak</span></button>
+                </div>
+                <div class="icon-coffe">
+                </div>
+                
+            </div>
+        </div>
+        <div class="main-loading" id="load">
+            <div class="loading"></div>
+            <p>Mohon Ditunggu</p>
+        </div>
+    </section>
+    <script>
+        function noLeftClick() {
+            if (event.button==1) {
+            }
+        }
+        document.onmousedown=noLeftClick
+    </script>
+
+    <script>
+        const b = document.getElementById('hero'); 
+        const a= document.getElementById('card-1');
+        const c = document.getElementById('coffe');
+        let buka=false;
+        
+        a.addEventListener("click",function(){
+            if(buka ==false ){
+                buka=true;
+                b.style.display = "none";
+                c.style.display ="block";
+                console.log(buka)
+            }else{
+                close();
+            }
+
+
+        });
+
+        function closeCoffe(){
+            if(buka==true){
+                buka = false;
+                b.style.display = "flex";
+                c.style.display ="none";
+                console.log(buka)
+
+            }
+        }   
+    </script>
+
+
+    <script>
+        function openpembelian(){
+            const c = document.getElementById('coffe');
+            const b = document.getElementById('load');
+            let buka = false;
+        
+            if(buka == false){
+                c.style.display ="none";
+                b.style.display ="flex";
+
+            }
+
+        }
+
+    </script>
+</body>
+</html>
