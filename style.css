@@ -33,6 +33,13 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+.pickOne {
+    /* border: 1px solid black; */
+    padding: 5px 1.5rem;
+    border-radius: 60px;
+    background-color: #3d405b;
+}
+
 .drink-menu {
     width: 100%;
     display: flex;
@@ -46,7 +53,7 @@ body {
     width: 150px;
     height: fit-content;
     padding: 15px;
-    border-radius: 15px; 
+    border-radius: 15px;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
@@ -54,12 +61,14 @@ body {
     align-items: center;
     background-color: white;
     gap: 15px;
+    cursor: pointer;
 }
 
 .splitter {
     width: 1px;
     height: 50%;
     background-color: white;
+    margin: 0 1.2rem;
 }
 
 .card .image {
@@ -81,7 +90,7 @@ body {
     color: rgba(0, 0, 0, 0.5);
 }
 
-.item-menu{
+.item-menu {
     display: flex;
     width: 100vw;
     height: 100vh;
@@ -89,17 +98,35 @@ body {
     align-items: center;
 }
 
-.cofirmationDialogBox{
-   padding: 20px;
-   display: none;
-   text-align: center;
-   width: 40vw;
-   background-color: aliceblue;
-   border-radius: 12px;
- 
+.confirmationDialogBox {
+    padding: 20px 60px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+    border-radius: 12px;
 }
 
-.main-loading{
+#menuSelected {
+    font-size: 25px;
+    text-align: center;
+}
+
+.button-confirmation {
+    margin-top: 1.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.splitter2 {
+    width: 1px;
+    background-color: black;
+    color: white;
+}
+
+.main-loading {
     display: none;
     align-items: center;
     justify-content: center;
@@ -109,27 +136,32 @@ body {
     width: 40vw;
     padding: 30px;
     background-color: aliceblue;
-
-
 }
 
 .loading {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
     border-radius: 50%;
     width: 50px;
     height: 50px;
-   
+
     animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 
-span{
+span {
     display: flex;
     align-items: center;
 }
@@ -147,30 +179,29 @@ button {
     width: 130px;
     transition: all 0.5s;
     cursor: pointer;
-    margin: 5px;
-   }
-   
-   button span {
+}
+
+button span {
     cursor: pointer;
     display: inline-block;
     position: relative;
     transition: 0.5s;
-   }
-   
-   button span:after {
+}
+
+button span:after {
     content: '»';
     position: absolute;
     opacity: 0;
     top: 0;
     right: -15px;
     transition: 0.5s;
-   }
-   
-   button:hover span {
+}
+
+button:hover span {
     padding-right: 15px;
-   }
-   
-   button:hover span:after {
+}
+
+button:hover span:after {
     opacity: 1;
     right: 0;
-   }
+}

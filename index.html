@@ -1,141 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <title>Dispenser</title>
+    </head>
 
-    <title>Dispenser</title>
-</head>
+    <body>
+        <section class="hero" id="hero">
+            <h3 class="pickOne">Pick One</h3>
+            <h1>Drink Menu</h1>
 
-<body>
-    <section class="hero" id="hero">
-        <h3>Pick One</h3>
-        <h1>Drink Menu</h1>
+            <div class="drink-menu" id="parentBtnCardSelector">
+                <div class="card" id="card-1">
+                    <div class="image"><img src="images/cappuccino-756490_1280.jpg" alt="coffee"></div>
+                    <h2 class="name">Coffee <span class="material-symbols-rounded">local_cafe</span></h2>
+                </div>
 
-        <div class="drink-menu">
-            <div class="card" id="card-1" >
-                <div class="image"><img src="images/coffee.jpg" alt="coffee"></div>
-                <h2 class="name">Coffee <span class="material-symbols-rounded">local_cafe</span></h2>                
-            </div>
+                <div class="splitter">.</div>
 
-            <div class="splitter">.</div>
-
-            <div class="card" id="card-2" >
-                <div class="image"><img src="images/fruit.jpg" alt="coffee"></div>
-                <h2 class="name">Fruit Juice <span class="material-symbols-rounded">local_bar</span></h2>
-            </div>
-        </div>
-    </section>
-
-    <section class="item-menu">
-        <div class="cofirmationDialogBox" id="cofirmationDialogBox">
-            <div class="container-coffe" id="coffe-1">
-                <p style="font-size: 25px;">apakah anda ingin membeli <p id="menuSelected"></p> ? </p>
-
-                <div class="button-coffe">
-                    <button onclick="openpembelian()"><span>Iya</span></button>
-                    <button onclick="closeCoffe()"><span>Tidak</span></button>
+                <div class="card" id="card-2">
+                    <div class="image"><img src="images/pexels-sebastian-coman-photography-1598188-3625372.jpg"
+                            alt="juice"></div>
+                    <h2 class="name">Fruit Juice <span class="material-symbols-rounded">local_bar</span></h2>
                 </div>
             </div>
-        </div>
-        <div class="main-loading" id="load">
-            <div class="loading"></div>
-            <p>Mohon Ditunggu</p>
-        </div>
-    </section>
+        </section>
 
-    <!-- Interaksi dengan menu minuman -->
-    <script>
-          // Get the hero section, card selection, and coffee section elements
-        const heropage = document.getElementById('hero'); 
-        const cardSelected = document.getElementById('card-1');
-        const selectionDialog = document.getElementById('cofirmationDialogBox');
+        <section class="item-menu">
+            <div class="confirmationDialogBox" id="confirmationDialogBox">
+                <div class="container-confirmation-dialog-box" id="container">
+                    <p style="font-size: 25px;">apakah anda yakin ingin membeli</p>
+                    <p id="menuSelected"></p>
 
-        // Initialize a boolean variable to track the state of the coffee section
-        let isChoosed = false;
+                    <div class="button-confirmation">
+                        <button onclick="openpembelian()"><span>Iya</span></button>
+                        <div class="splitter2">.</div>
+                        <button onclick="close_Confirmation_Dialog_Box()"><span>Tidak</span></button>
+                    </div>
+                </div>
+            </div>
 
+            <div class="main-loading" id="load">
+                <div class="loading"></div>
+                <p>Mohon Ditunggu</p>
+            </div>
+        </section>
 
-        cardSelected.addEventListener("click", () => {
-            // If the coffee section is already open, close it
-            if (isChoosed) {
-                closeCoffe();
-                return;
+        <!-- Interaksi dengan menu minuman -->
+        <script>
+            // Get the parent element that contains the drink menu cards
+            const parentBtnCardSelector = document.getElementById("parentBtnCardSelector");
+            // Get the element that displays the selected drink menu item
+            let menuSelected = document.getElementById("menuSelected");
+            // Get the confirmation dialog box element
+            let confirmationDialogBox = document.getElementById("confirmationDialogBox");
+            // Get the hero section element
+            let heroSection = document.getElementById("hero");
+            // Track the dialog if its opened or not
+            let isDialogBoxOpened = false;
+
+            // Add a click event listener to the parent element
+            parentBtnCardSelector.addEventListener('click', (event) => {
+                // Check if the clicked element is a div (the drink menu card)
+                if (event.target.tagName === 'DIV') {
+                    // Set the status to be true
+                    isDialogBoxOpened = true;
+                    // Get the id in each child element that contains the id
+                    const buttonId = event.target.id;
+                    // Hide the hero section
+                    heroSection.style.display = 'none';
+                    // Show the confirmation dialog box
+                    confirmationDialogBox.style.display = 'flex';
+
+                    // Switch statement to handle different drink menu items
+                    switch (buttonId) {
+                        case 'card-1':
+                            console.log("anda memilih kopi!");
+                            // Update the selected drink menu item text
+                            menuSelected.textContent = 'kopi?';
+                            break;
+
+                        case 'card-2':
+                            console.log("anda memilih jus!");
+                            // Update the selected drink menu item text
+                            menuSelected.textContent = 'jus?';
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            });
+
+            // Ini blok kode mau dipake apa buat ya?
+            const selected = [];
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                const name = card.querySelector('.name').textContent;
+                selected.push(name);
+            });
+
+            console.log(selected);
+
+            // Function to close the coffee section
+            function close_Confirmation_Dialog_Box() {
+                // Check the condition if the dialog is opened or not.
+                if (!isDialogBoxOpened) return;
+
+                // Show the hero section
+                heroSection.style.display = 'flex';
+                // Hide the confirmation dialog box
+                confirmationDialogBox.style.display = 'none';
+                // Reset the status to be false
+                isDialogBoxOpened = false;
             }
-            // Set the coffee section as open
-            isChoosed = true;
-            // Hide the hero section
-            heropage.style.display = "none"; 
-            // Show the coffee confirm dialog box
-            selectionDialog.style.display = "block"; 
-            // Log the state of the coffee section
-            console.log(isChoosed);
-        })
+        </script>
 
+        <script>
+            function openpembelian() {
+                // Get the coffee and loading screen elements
+                const coffe = document.getElementById('cofirmationDialogBox');
+                const loadingScreen = document.getElementById('load');
+                // Initialize a boolean variable to track the state of the coffee section
+                let isConfirmed = false;
 
-
-
-        const selected =[];
-        const cards = document.querySelectorAll('.card');
-
-        cards.forEach(card => {
-            const name = card.querySelector('.name').textContent;
-
-            selected.push(name);
-            
-        });
-
-
-        console.log(selected);
-
-
-      
-    
-        // Add a click event listener to the card selection
-     ;
-    
-        // Function to close the coffee section
-        function closeCoffe() {
-            // If the coffee section is open
-            if (isChoosed) {
-                // Set the coffee section as closed
-                isChoosed = false;
-                // Show the card selection
-                heropage.style.display = "flex"; 
+                // If the coffee section is already open, close it
+                if (isConfirmed) {
+                    close();
+                    return;
+                }
                 // Hide the coffee confirm dialog box
-                coffee.style.display = "none";     
-                // Log the state of the coffee section
-                console.log(isChoosed); 
+                coffe.style.display = "none";
+                // Show the loading screen
+                loadingScreen.style.display = "flex";
+                // Set the coffee section as open
+                isConfirmed = true;
             }
-        }
-    </script>
-    </script>
+        </script>
+    </body>
 
-
-    <script>
-
-        function openpembelian(){
-            // Get the coffee and loading screen elements
-            const coffe = document.getElementById('cofirmationDialogBox');
-            const loadingScreen = document.getElementById('load');
-            // Initialize a boolean variable to track the state of the coffee section
-            let isConfirmed = false;
-        
-            // If the coffee section is already open, close it
-            if (isConfirmed) {
-                close();
-                return;
-            }
-            // Hide the coffee confirm dialog box
-            coffe.style.display = "none";
-            // Show the loading screen
-            loadingScreen.style.display = "flex";
-            // Set the coffee section as open
-            isConfirmed = true;
-        }
-
-    </script>
-</body>
 </html>
