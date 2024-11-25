@@ -6,6 +6,7 @@
     font-family: "Poppins", serif;
     font-weight: 400;
     font-style: normal;
+    user-select: none;
 }
 
 body {
@@ -67,6 +68,7 @@ body {
 .splitter {
     width: 1px;
     height: 50%;
+    color: rgba(0, 0, 0, 0);
     background-color: white;
     margin: 0 1.2rem;
 }
@@ -85,6 +87,8 @@ body {
 
 .card h2 {
     display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 18px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.5);
