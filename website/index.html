@@ -171,6 +171,7 @@
 
       function processOrder(pesanan) {
         console.log(pesanan);
+        stopLoadingOrder();
       }
 
       function stopLoadingOrder() {
@@ -182,6 +183,10 @@
         iconLoadings.style.display = "none";
         // Update the dialog text to show the order has been processed
         dialogProcess.innerHTML = "Pesanan Anda Sudah Selesai!";
+
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 5000);
       }
     </script>
   </body>
