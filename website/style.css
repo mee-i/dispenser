@@ -143,6 +143,7 @@ body {
 }
 
 .loading {
+    display: block;
     border: 16px solid #f3f3f3;
     /* Light grey */
     border-top: 16px solid #3498db;
@@ -208,4 +209,11 @@ button:hover span {
 button:hover span:after {
     opacity: 1;
     right: 0;
+}
+
+
+.done > span {
+    display: none;
+    font-size: 100px;
+    color: rgb(42, 89, 39);
 }

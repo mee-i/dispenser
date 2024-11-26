@@ -8,6 +8,10 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=task_alt"
+    />
     <title>Dispenser</title>
   </head>
 
@@ -46,7 +50,7 @@
           <p id="menuSelected"></p>
 
           <div class="button-confirmation">
-            <button onclick="openpembelian()">
+            <button onclick="openPembelian()">
               <span>Proses</span>
             </button>
             <div class="splitter2">.</div>
@@ -58,14 +62,17 @@
       </div>
 
       <div class="main-loading" id="load">
-        <div class="loading"></div>
-        <p>Memproses pesanan...</p>
+        <div class="loading" id="loading"></div>
+        <div class="done">
+          <span class="material-symbols-outlined">task_alt</span>
+        </div>
+        <p id="textDialogOrder"></p>
       </div>
     </section>
 
     <!-- Interaksi dengan menu minuman -->
     <script>
-      let Pesanan;
+      let pesanan;
       const KOPI = "KOPI";
       const JUS = "JUS";
 
@@ -84,6 +91,10 @@
       // Get the hero section element
       let heroSection = document.getElementById("hero");
       // Track the dialog if its opened or not
+      let dialogProcess = document.getElementById("textDialogOrder"); //dialog in process order
+
+      let iconLoadings = document.getElementById("loading");
+
       let isDialogBoxOpened = false;
 
       // Add a click event listener to the parent element
@@ -104,14 +115,14 @@
               console.log("anda memilih kopi!");
               // Update the selected drink menu item text
               menuSelected.textContent = "Kopi";
-              Pesanan = KOPI; //decklarasi variabel pesanan
+              pesanan = KOPI; //decklarasi variabel pesanan
               break;
 
             case "card-2":
               console.log("anda memilih jus!");
               // Update the selected drink menu item text
               menuSelected.textContent = "Jus";
-              Pesanan = JUS; //decklarasi variabel pesanan
+              pesanan = JUS; //decklarasi variabel pesanan
               break;
 
             default:
@@ -133,7 +144,7 @@
         isDialogBoxOpened = false;
       }
 
-      function openpembelian() {
+      function openPembelian() {
         // Get the coffee and loading screen elements
         const dialogBox = document.getElementById("confirmationDialogBox");
         const loadingScreen = document.getElementById("load");
@@ -151,11 +162,26 @@
         loadingScreen.style.display = "flex";
         // Set the coffee section as open
         isConfirmed = true;
-        processOrder(Pesanan); //call the function prosesOrder()
+        // Update the dialog text to show the order being processed
+        dialogProcess.innerHTML =
+          "Tunggu sebentar pesanan sedang di siapkan ...";
+        //call the function prosesOrder()
+        processOrder(pesanan);
       }
 
-      function processOrder(Pesanan) {
-        console.log(Pesanan);
+      function processOrder(pesanan) {
+        console.log(pesanan);
+      }
+
+      function stopLoadingOrder() {
+        // Get the loading screen element icon done
+        const stopLoading = document.querySelector(".done > span");
+        // Show the loading screen
+        stopLoading.style.display = "block";
+        // Hidethe hero section
+        iconLoadings.style.display = "none";
+        // Update the dialog text to show the order has been processed
+        dialogProcess.innerHTML = "Pesanan Anda Sudah Selesai!";
       }
     </script>
   </body>
