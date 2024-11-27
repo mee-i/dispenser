@@ -10,11 +10,11 @@ class ErrorNotConnected extends Error {
     }
 }
 
-export default class WebSocketConnection {
-    #ws_onopen: (ev: Event) => any;
-    #ws_onclose: (ev: CloseEvent) => any;
-    #ws_onmessage: (ev: MessageEvent) => any;
-    #ws_onerror: (ev: Event) => any;
+class WebSocketConnection {
+    #ws_onopen?: (ev: Event) => any;
+    #ws_onclose?: (ev: CloseEvent) => any;
+    #ws_onmessage?: (ev: MessageEvent) => any;
+    #ws_onerror?: (ev: Event) => any;
 
     set onopen(func: (ev: Event) => any) {
         this.#ws_onopen = func;
@@ -33,16 +33,16 @@ export default class WebSocketConnection {
         if (this.#connection) this.#connection.onerror = func;
     }
 
-    get onopen(): (ev: Event) => any {
+    get onopen(): ((ev: Event) => any) | undefined {
         return this.#ws_onopen;
     }
-    get onclose(): (ev: CloseEvent) => any {
+    get onclose(): ((ev: CloseEvent) => any) | undefined {
         return this.#ws_onclose;
     }
-    get onmessage(): (ev: MessageEvent) => any {
+    get onmessage(): ((ev: MessageEvent) => any) | undefined {
         return this.#ws_onmessage;
     }
-    get onerror(): (ev: Event) => any {
+    get onerror(): ((ev: Event) => any) | undefined {
         return this.#ws_onerror;
     }
 
@@ -61,6 +61,9 @@ export default class WebSocketConnection {
         });
     }
 
+    // Public properties
+    logging: boolean = true;
+
     // Hidden properties
     #timeoutId: number = -1;
     #reconnects: number = 0;
@@ -78,13 +81,24 @@ export default class WebSocketConnection {
     get maxReconnects() { return this.#maxReconnects }
     get connection() { return this.#connection }
 
+    #log(...data: any[]): void {
+        if (!this.logging) return;
+        console.log("[WebSocket]", ...data);
+    }
+
     // Hidden methods
-    #connect(): void {
+    #connect(this: WebSocketConnection): void {
         // Stop reconnecting when max reconnects count reached
         if (this.#reconnects >= this.#maxReconnects) {
             this.#clearConnectionTimeout();
+            this.#log("Maximum connection attempt reached");
             return;
         }
+
+        if (this.#connection != null)
+            this.#log("Reconnecting...");
+        else
+            this.#log("Connecting...");
 
         // Open new connection
         this.#connection = new WebSocket(this.#url);
@@ -106,58 +120,63 @@ export default class WebSocketConnection {
         this.#connection.onclose = this.#ws_onclose;
         this.#connection.onerror = this.#ws_onerror;
 
-        this.#scheduleReconnect(); // reset connection timeout handler
+        this.#setConnectionTimeout(); // reset connection timeout handler
 
         this.#reconnects++;
     }
 
-    #clearConnectionTimeout(): void {
+    #clearConnectionTimeout(this: WebSocketConnection): void {
         // Remove connection timeout
         clearTimeout(this.#timeoutId);
     }
 
-    #setConnectionTimeout(): void {
+    #setConnectionTimeout(this: WebSocketConnection): void {
         // Set or reset connection timeout
         this.#clearConnectionTimeout();
-        this.#timeoutId = setTimeout(this.#onTimeout, this.#connectionTimeout);
+        const thisObj = this;
+        this.#timeoutId = setTimeout(() => thisObj.#onTimeout(), this.#connectionTimeout);
     }
 
-    #scheduleReconnect(): void {
+    #scheduleReconnect(this: WebSocketConnection): void {
         // Schedule reconnect process
         this.#clearConnectionTimeout();
-        this.#timeoutId = setTimeout(this.#connect, this.#reconnectInterval);
+        const thisObj = this;
+        this.#timeoutId = setTimeout(() => thisObj.#connect(), this.#reconnectInterval);
     }
 
-    #onTimeout(): void {
+    #onTimeout(this: WebSocketConnection): void {
         // Reconnect when timeout reached
-        this.#connect();
+        this.#log("Connection timeout");
+        this.#scheduleReconnect();
     }
 
-    #onConnect(): void {
+    #onConnect(this: WebSocketConnection): void {
         // Reset reconnect state when WebSocket connected
         this.#clearConnectionTimeout();
         this.#reconnects = 0;
+        this.#log("Connected to " + this.#url);
     }
 
-    #onDisconnect(): void {
+    #onDisconnect(this: WebSocketConnection): void {
         if (!this.#doReconnect) return;
-        this.#setConnectionTimeout();
+        this.#scheduleReconnect();
     }
 
-    constructor(url: string, connectionTimeout: number = 10000, reconnectInterval: number = 2, maxReconnects: number = 5) {
+    constructor(url: string, connectionTimeout: number = 10000, reconnectInterval: number = 2000, maxReconnects: number = 5) {
         this.#url = url;
         this.#reconnectInterval = reconnectInterval;
         this.#maxReconnects = maxReconnects;
         this.#connectionTimeout = connectionTimeout;
+        this.#reconnects = 0;
     }
 
-    start(): void {
+    start(this: WebSocketConnection): void {
         this.#doReconnect = true;
         this.#reconnects = 0;
         this.#connect();
     }
 
-    close(): void {
+    close(this: WebSocketConnection): void {
         this.#doReconnect = false;
         this.#connection?.close();
         this.#connection = null;
@@ -167,5 +186,7 @@ export default class WebSocketConnection {
         if (this.#connection === null) throw new ErrorNotConnected("Connection is not opened");
         this.#connection.send(data);
     }
-
 }
+
+// export default WebSocketConnection;
+// export { ErrorNotConnected };
