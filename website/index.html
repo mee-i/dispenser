@@ -23,10 +23,11 @@
       <div class="drink-menu" id="parentBtnCardSelector">
         <div class="card" id="card-1">
           <div class="image">
-            <img src="images/coffee.jpg" alt="coffee" />
+            <img src="images/cappuccino-756490_1280.jpg" alt="coffee" />
           </div>
           <h2 class="name">
-            Coffee <span class="material-symbols-rounded">local_cafe</span>
+            <span>Coffee</span>
+            <span class="material-symbols-rounded">local_cafe</span>
           </h2>
         </div>
 
@@ -34,10 +35,14 @@
 
         <div class="card" id="card-2">
           <div class="image">
-            <img src="images/fruit.jpg" alt="juice" />
+            <img
+              src="images/pexels-sebastian-coman-photography-1598188-3625372.jpg"
+              alt="juice"
+            />
           </div>
           <h2 class="name">
-            Fruit Juice <span class="material-symbols-rounded">local_bar</span>
+            <span>Fruit Juice</span>
+            <span class="material-symbols-rounded">local_bar</span>
           </h2>
         </div>
       </div>
@@ -67,6 +72,7 @@
           <span class="material-symbols-outlined">task_alt</span>
         </div>
         <p id="textDialogOrder"></p>
+        <button id="buttonKembali">kembali</button>
       </div>
     </section>
 
@@ -94,6 +100,8 @@
       let dialogProcess = document.getElementById("textDialogOrder"); //dialog in process order
 
       let iconLoadings = document.getElementById("loading");
+
+      let buttonKembali = document.getElementById("buttonKembali");
 
       let isDialogBoxOpened = false;
 
@@ -160,6 +168,8 @@
         dialogBox.style.display = "none";
         // Show the loading screen
         loadingScreen.style.display = "flex";
+
+        buttonKembali.style.display = "none";
         // Set the coffee section as open
         isConfirmed = true;
         // Update the dialog text to show the order being processed
@@ -179,15 +189,59 @@
         const stopLoading = document.querySelector(".done > span");
         // Show the loading screen
         stopLoading.style.display = "block";
-        // Hidethe hero section
+        // Hide the hero section
         iconLoadings.style.display = "none";
+
+        buttonKembali.style.display = "block";
+
         // Update the dialog text to show the order has been processed
         dialogProcess.innerHTML = "Pesanan Anda Sudah Selesai!";
 
-        setTimeout(() => {
-          window.location.reload(true);
-        }, 5000);
+        // Refresh the page after 5 seconds
+        setTimeout(() => window.location.reload(true), 5000);
       }
+
+      // Function to start countdown before refreshing the page
+      async function startCountdown(buttonId) {
+        const button = document.getElementById("buttonKembali");
+        let countdown = 5;
+
+        // Function to update button text
+        function updateButtonText() {
+          button.textContent = `Kembali ${countdown}`;
+          countdown--;
+        }
+
+        // Promise for countdown
+        const countdownPromise = new Promise((resolve) => {
+          const interval = setInterval(() => {
+            updateButtonText();
+
+            // If time is up, stop interval and resolve Promise
+            if (countdown < 0) {
+              clearInterval(interval);
+              resolve("timeout");
+            }
+          }, 1000);
+        });
+
+        // Wait for Promise result (timeout or button click)
+        const result = await Promise.race([
+          countdownPromise,
+          new Promise((resolve) =>
+            button.addEventListener("click", () => resolve("clicked"), {
+              once: true,
+            })
+          ),
+        ]);
+
+        // Refresh page based on result
+        if (result === "timeout" || result === "clicked") {
+          window.location.reload(true);
+        }
+      }
+      // Start countdown when the page loads
+      startCountdown("refreshButton");
     </script>
   </body>
 </html>
