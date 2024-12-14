@@ -163,8 +163,10 @@ class order_process_system:
         # Start the timer
         start_time = time.perf_counter()
         
+        remaining = self.remaining_duration
+        
         # returns float
-        get_remaining_duration = lambda: time.perf_counter() - start_time
+        get_remaining_duration = lambda: start_time + remaining - time.perf_counter()
         
         # returns boolean
         done = lambda: get_remaining_duration() <= 0
