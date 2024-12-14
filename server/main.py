@@ -166,7 +166,11 @@ class order_process_system:
         remaining = self.remaining_duration
         
         # returns float
-        get_remaining_duration = lambda: start_time + remaining - time.perf_counter()
+        def get_remaining_duration():
+            perf_counter = time.perf_counter()
+            result = start_time + remaining - perf_counter
+            print("Start time:", result, ", remaining: ", remaining, ", perfcounter:", perf_counter)
+            return result
         
         # returns boolean
         done = lambda: get_remaining_duration() <= 0
