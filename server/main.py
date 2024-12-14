@@ -192,17 +192,14 @@ async def handle_connection(websocket) -> None:
             
             response = {}
             
-            for i in data:
-                print(i, ", type: ", type(i))
-            
-            if message['type'] == msgtype.order:
+            if data['type'] == msgtype.order:
                 # Process the incoming order
                 if not await order_process.start(message["option"], websocket):
                     await websocket.send(json.dumps({
                         'status': status.ERROR,
                         'type': msgtype.system_error
                     }))
-            elif message['type'] == msgtype.get_data:
+            elif data['type'] == msgtype.get_data:
                 await websocket.send(json.dumps({
                     'status': status.OK,
                     'type': msgtype.data,
