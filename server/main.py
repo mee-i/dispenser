@@ -180,7 +180,7 @@ class order_process_system:
         print("Remaining:", self.remaining_duration, "s")
         while check_cup_proximity() and not done():
             await asyncio.sleep(min(get_remaining_duration(), proximity_sensing_interval))
-            self.remaining_duration = get_remaining_duration()
+            # self.remaining_duration = get_remaining_duration()
             print("Remaining:", self.remaining_duration, "s")
             
         selected_motor.off() # turn off the motor
