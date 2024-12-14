@@ -107,6 +107,7 @@ class order_process_system:
     async def start(self, option: str, connection) -> bool:
         global dispensing_duration
         if self.dispensing_process != None:
+            print("Order process already started")
             return False
         self.remaining_duration = dispensing_duration
         self.connection = connection
@@ -124,19 +125,21 @@ class order_process_system:
             print("Remaining duration:", self.remaining_duration, "s")
             if not check_cup_proximity():
                 print("Out of range")
-                await self.connection.send(json.dumps({
-                    'status': status.ERROR,
-                    'type': msgtype.cup_error,
-                }))
+                # await self.connection.send(json.dumps({
+                #     'status': status.ERROR,
+                #     'type': msgtype.cup_error,
+                # }))
+                print("Send error")
                 while not check_cup_proximity(): asyncio.sleep(proximity_sensing_interval)
-            await self.connection.send(json.dumps({
-                'status': status.OK,
-                'type': msgtype.dispense_resume,
-            }))
+            # await self.connection.send(json.dumps({
+            #     'status': status.OK,
+            #     'type': msgtype.dispense_resume,
+            # }))
+            print("Send resume")
             print("Dispense resume")
             await asyncio.sleep(1)
             await self.dispense_drink()
-        
+        print("Done")
         await asyncio.sleep(1)
         await self.connection.send(json.dumps({
             'status': status.OK,
