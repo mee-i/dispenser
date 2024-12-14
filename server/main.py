@@ -152,12 +152,13 @@ class order_process_system:
     # ###
     # Dispense the drink, returns the remaining duration
     async def dispense_drink(self) -> None:
-        global motors, proximity_sensing_interval, is_dispensing
+        global motors, proximity_sensing_interval, is_dispensing, led
         is_dispensing = True
         
         selected_motor = motors[0] if self.option == order.drink1 else motors[1]
         
         selected_motor.on() # turn on the motor
+        led.on()
         
         # Start the timer
         start_time = time.perf_counter()
@@ -177,6 +178,7 @@ class order_process_system:
             print("Remaining:", self.remaining_duration, "s")
             
         selected_motor.off() # turn off the motor
+        led.off()
         
         is_dispensing = False
         if not done():
