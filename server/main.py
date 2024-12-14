@@ -119,6 +119,7 @@ class order_process_system:
     async def process(self) -> None:
         print("Processing...")
         global proximity_sensing_interval
+        print("Remaining duration:", self.remaining_duration, "s")
         while self.remaining_duration > 0:
             if not check_cup_proximity():
                 print("Out of range")
