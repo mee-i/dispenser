@@ -161,13 +161,13 @@ class order_process_system:
         led.on()
         
         # Start the timer
-        start_time = time.perf_counter()
+        start_time = time.time()
         
         remaining = self.remaining_duration
         
         # returns float
         def get_remaining_duration():
-            perf_counter = time.perf_counter()
+            perf_counter = time.time()
             result = start_time + remaining - perf_counter
             print("Start time:", result, ", remaining:", remaining, ", perfcounter:", perf_counter, ", result:", result)
             return result
