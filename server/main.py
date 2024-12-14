@@ -38,7 +38,7 @@ led = LED(26)
 
 # Connection to motors' relays
 # coffee, juice
-motors = [ LED(99), LED(99) ] # TO DO
+motors = [ LED(50), LED(50) ] # TO DO
 
 # Cup detector sensor
 cup_detector = DistanceSensor(echo=17, trigger=4)
