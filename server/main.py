@@ -130,7 +130,9 @@ class order_process_system:
                 #     'type': msgtype.cup_error,
                 # }))
                 print("Send error")
-                while not check_cup_proximity(): await asyncio.sleep(proximity_sensing_interval)
+                while not check_cup_proximity(): 
+                    print("Distance:", get_distance(), "cm, Target:", minimum_cup_proximity, maximum_cup_proximity)
+                    await asyncio.sleep(proximity_sensing_interval)
             # await self.connection.send(json.dumps({
             #     'status': status.OK,
             #     'type': msgtype.dispense_resume,
