@@ -169,7 +169,7 @@ class order_process_system:
         def get_remaining_duration():
             perf_counter = time.time()
             result = start_time + remaining - perf_counter
-            print("Start time:", result, ", remaining:", remaining, ", perfcounter:", perf_counter, ", result:", result)
+            print("Start time:", start_time, ", remaining:", remaining, ", perfcounter:", perf_counter, ", result:", result)
             return result
         
         # returns boolean
