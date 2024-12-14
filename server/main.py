@@ -87,7 +87,7 @@ def get_distance() -> int:
 def check_cup_proximity() -> bool:
     global minimum_cup_proximity, maximum_cup_proximity
     distance = get_distance() * 100
-    return distance <= minimum_cup_proximity and distance >= maximum_cup_proximity
+    return distance <= 9 and distance >= 3
 
 
 
