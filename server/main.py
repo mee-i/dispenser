@@ -28,6 +28,7 @@ class msgtype:
     system_error = 'system_error'
     get_data = 'get_data'
     data = 'data'
+    order_timeout = 'order_timeout'
     
 # Dispensing duration (in second(s))
 dispensing_duration: float = 5
@@ -40,7 +41,7 @@ led = LED(26)
 motors = [ LED(99), LED(99) ] # TO DO
 
 # Cup detector sensor
-cup_detector = DistanceSensor(echo=18, trigger=17)
+cup_detector = DistanceSensor(echo=17, trigger=4)
 
 # Drink menu
 drink_memu = {
@@ -115,7 +116,7 @@ class order_process_system:
         
     # ###
     # Process the order
-    async def process(self):
+    async def process(self) -> None:
         global proximity_sensing_interval
         while self.remaining_duration > 0:
             if not check_cup_proximity():
@@ -191,21 +192,19 @@ async def handle_connection(websocket) -> None:
             
             response = {}
             
-            match message['type']:
-                case msgtype.order:
-                    # Process the incoming order
-                    if not await order_process.start(message["option"], websocket):
-                        await websocket.send(json.dumps({
-                            'status': status.ERROR,
-                            'type': msgtype.system_error
-                        }))
-                    
-                case msgtype.get_data:
+            if message['type'] == msgtype.order:
+                # Process the incoming order
+                if not await order_process.start(message["option"], websocket):
                     await websocket.send(json.dumps({
-                        'status': status.OK,
-                        'type': msgtype.data,
-                        'data': 'on_process' if order_process.is_running() else 'ready'
+                        'status': status.ERROR,
+                        'type': msgtype.system_error
                     }))
+            elif message['type'] == msgtype.get_data:
+                await websocket.send(json.dumps({
+                    'status': status.OK,
+                    'type': msgtype.data,
+                    'data': 'on_process' if order_process.is_running() else 'ready'
+                }))
             
     except websockets.exceptions.ConnectionClosed as e:
         print(f"Connection closed: {e}")

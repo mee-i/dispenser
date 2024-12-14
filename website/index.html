@@ -6,11 +6,7 @@
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=task_alt"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0"
     />
     <title>Dispenser</title>
   </head>
@@ -55,7 +51,7 @@
           <p id="menuSelected"></p>
 
           <div class="button-confirmation">
-            <button onclick="openPembelian()">
+            <button onclick="processOrder()">
               <span>Proses</span>
             </button>
             <div class="splitter2">.</div>
@@ -69,18 +65,62 @@
       <div class="main-loading" id="load">
         <div class="loading" id="loading"></div>
         <div class="done">
-          <span class="material-symbols-outlined">task_alt</span>
+          <span class="material-symbols-rounded">task_alt</span>
         </div>
         <p id="textDialogOrder"></p>
         <button id="buttonKembali">kembali</button>
       </div>
     </section>
 
+    <script src="websocket.js"></script>
+
     <!-- Interaksi dengan menu minuman -->
     <script>
+
+      const STATUS = {
+        OK: 'OK',
+        ERROR: 'ERROR'
+      }
+
+      const MSG_TYPE = {
+        order: 'order',
+        done: 'done',
+        cancelled: 'cancelled',
+        movement_detected: 'movement_detected',
+        dispense_pause: 'dispense_pause',
+        dispense_resume: 'dispense_resume',
+        cup_error: 'cup_error',
+        cup_wait_taken: 'cup_wait_taken',
+        system_error: 'system_error',
+        get_data: 'get_data',
+        data: 'data',
+        order_timeout: 'order_timeout',
+      }
+
+      const ORDER = {
+        drink1: 'drink1',
+        drink2: 'drink2',
+      }
+
+      class MenuName {
+        s = ""
+        d = ""
+        constructor(s, d) {
+          this.s = s;
+          this.d = d;
+        }
+      }
+
+      const MENU_NAME = {
+        drink1: new MenuName('Kopi', 'kopi'),
+        drink2: new MenuName('Jus', 'jus'),
+      }
+
       let pesanan;
       const KOPI = "KOPI";
       const JUS = "JUS";
+
+      var connection = null;
 
       // Get the drink menu cards elements using querySelectorAll method
       const Cards = document.querySelectorAll(".card");
@@ -120,22 +160,20 @@
           // Switch statement to handle different drink menu items
           switch (buttonId) {
             case "card-1":
-              console.log("anda memilih kopi!");
-              // Update the selected drink menu item text
-              menuSelected.textContent = "Kopi";
-              pesanan = KOPI; //decklarasi variabel pesanan
+              pesanan = ORDER.drink1; //decklarasi variabel pesanan
               break;
 
             case "card-2":
-              console.log("anda memilih jus!");
-              // Update the selected drink menu item text
-              menuSelected.textContent = "Jus";
-              pesanan = JUS; //decklarasi variabel pesanan
+              pesanan = ORDER.drink2; //decklarasi variabel pesanan
               break;
 
             default:
               break;
+
           }
+          // Update the selected drink menu item text
+          menuSelected.textContent = MENU_NAME[pesanan].s;
+          console.log(`anda memilih ${MENU_NAME[pesanan].d}!`);
         });
       });
 
@@ -152,39 +190,44 @@
         isDialogBoxOpened = false;
       }
 
-      function openPembelian() {
+      function startLoading() {
         // Get the coffee and loading screen elements
         const dialogBox = document.getElementById("confirmationDialogBox");
         const loadingScreen = document.getElementById("load");
         // Initialize a boolean variable to track the state of the coffee section
         let isConfirmed = false;
 
-        // If the coffee section is already open, close it
-        if (isConfirmed) {
-          close();
-          return;
-        }
+        // //////////
+        // Get the loading screen element icon done
+        const stopLoading = document.querySelector(".done > span");
+        // Show the loading screen
+        stopLoading.style.display = "none";
+        // Hide the hero section
+        iconLoadings.style.display = "block";
+
+        buttonKembali.style.display = "none";
+        // //////////
+
         // Hide the coffee confirm dialog box
         dialogBox.style.display = "none";
         // Show the loading screen
         loadingScreen.style.display = "flex";
+
+        heroSection.style.display = "none";
 
         buttonKembali.style.display = "none";
         // Set the coffee section as open
         isConfirmed = true;
         // Update the dialog text to show the order being processed
         dialogProcess.innerHTML =
-          "Tunggu sebentar pesanan sedang di siapkan ...";
-        //call the function prosesOrder()
-        processOrder(pesanan);
+          "Memproses pesanan...";
       }
 
-      function processOrder(pesanan) {
-        console.log(pesanan);
-        stopLoadingOrder();
+      function processOrder() {
+        startLoading();
       }
 
-      function stopLoadingOrder() {
+      function loadingDone() {
         // Get the loading screen element icon done
         const stopLoading = document.querySelector(".done > span");
         // Show the loading screen
@@ -196,9 +239,38 @@
 
         // Update the dialog text to show the order has been processed
         dialogProcess.innerHTML = "Pesanan Anda Sudah Selesai!";
+        
+        stopLoading.innerHTML = "task_alt";
+        stopLoading.style.color = "rgb(42, 89, 39)";
 
         // Refresh the page after 5 seconds
         setTimeout(() => window.location.reload(true), 5000);
+
+        // Start countdown when the page loads
+        startCountdown("refreshButton");
+      }
+
+      function loadingAlert(msg, icon, color = "#FF0000") {
+        // Get the loading screen element icon done
+        const stopLoading = document.querySelector(".done > span");
+        // Show the loading screen
+        stopLoading.style.display = "block";
+        // Hide the hero section
+        iconLoadings.style.display = "none";
+
+        stopLoading.innerHTML = icon;
+        stopLoading.style.color = color;
+
+        // Update the dialog text to show the order has been processed
+        dialogProcess.innerHTML = msg;
+      }
+
+      function loadingWarn(msg) {
+        loadingAlert(msg, "warning", "#baba00");
+      }
+
+      function loadingError(msg) {
+        loadingAlert(msg, "error", "#af0000")
       }
 
       // Function to start countdown before refreshing the page
@@ -240,8 +312,36 @@
           window.location.reload(true);
         }
       }
-      // Start countdown when the page loads
-      startCountdown("refreshButton");
+
+      function systemLog(msg) {
+        console.log("[SYSTEM]", msg);
+      }
+
+      onload = () => {
+        connection = new WebSocketConnection("ws://192.168.32.93:8765");
+        connection.onmessage = (e) => {
+          const message = JSON.parse(e.data);
+          switch (message['status']) {
+            case STATUS.OK:
+              systemLog("OK");
+              break;
+            case STATUS.ERROR:
+              systemLog("ERROR")
+              break;
+          }
+          switch (message['type']) {
+            case MSG_TYPE.dispense_resume:
+              startLoading();
+              break;
+            case MSG_TYPE.cup_error:
+              loadingWarn("Periksa posisi cup!");
+              break;
+            case MSG_TYPE.order_timeout:
+              loadingError("Pesanan dibatalkan!");
+              break;
+          }
+        }
+      }
     </script>
   </body>
 </html>
