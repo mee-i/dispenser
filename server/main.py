@@ -121,6 +121,7 @@ class order_process_system:
         global proximity_sensing_interval
         print("Remaining duration:", self.remaining_duration, "s")
         while self.remaining_duration > 0:
+            print("Remaining duration:", self.remaining_duration, "s")
             if not check_cup_proximity():
                 print("Out of range")
                 await self.connection.send(json.dumps({
