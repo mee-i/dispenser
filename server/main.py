@@ -109,17 +109,19 @@ class order_process_system:
         if self.dispensing_process != None:
             return False
         self.remaining_duration = dispensing_duration
+        self.connection = connection
         self.dispensing_process = asyncio.create_task(self.process())
         self.option = option
-        self.connection = connection
         return True
         
     # ###
     # Process the order
     async def process(self) -> None:
+        print("Processing...")
         global proximity_sensing_interval
         while self.remaining_duration > 0:
             if not check_cup_proximity():
+                print("Out of range")
                 await self.connection.send(json.dumps({
                     'status': status.ERROR,
                     'type': msgtype.cup_error,
@@ -129,6 +131,7 @@ class order_process_system:
                 'status': status.OK,
                 'type': msgtype.dispense_resume,
             }))
+            print("Dispense resume")
             await asyncio.sleep(1)
             await self.dispense_drink()
         
@@ -163,6 +166,7 @@ class order_process_system:
         while check_cup_proximity() and not done():
             await asyncio.sleep(min(get_remaining_duration(), proximity_sensing_interval))
             self.remaining_duration = get_remaining_duration()
+            print("Remaining:", self.remaining_duration, "s")
             
         selected_motor.off() # turn off the motor
         
