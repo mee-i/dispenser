@@ -125,18 +125,18 @@ class order_process_system:
             print("Remaining duration:", self.remaining_duration, "s")
             if not check_cup_proximity():
                 print("Out of range")
-                # await self.connection.send(json.dumps({
-                #     'status': status.ERROR,
-                #     'type': msgtype.cup_error,
-                # }))
+                await self.connection.send(json.dumps({
+                    'status': status.ERROR,
+                    'type': msgtype.cup_error,
+                }))
                 print("Send error")
                 while not check_cup_proximity(): 
                     print("Distance:", get_distance(), "cm, Target:", minimum_cup_proximity, maximum_cup_proximity)
                     await asyncio.sleep(proximity_sensing_interval)
-            # await self.connection.send(json.dumps({
-            #     'status': status.OK,
-            #     'type': msgtype.dispense_resume,
-            # }))
+            await self.connection.send(json.dumps({
+                'status': status.OK,
+                'type': msgtype.dispense_resume,
+            }))
             print("Send resume")
             print("Dispense resume")
             await asyncio.sleep(1)

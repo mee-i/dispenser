@@ -344,6 +344,9 @@
             case MSG_TYPE.order_timeout:
               loadingError("Pesanan dibatalkan!");
               break;
+            case MSG_TYPE.done:
+              loadingDone();
+              break;
           }
         }
       }
