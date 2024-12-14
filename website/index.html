@@ -224,6 +224,11 @@
       }
 
       function processOrder() {
+        connection.send(JSON.stringify({
+          status: STATUS.OK,
+          type: MSG_TYPE.order,
+          option: pesanan,
+        }));
         startLoading();
       }
 

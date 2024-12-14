@@ -192,6 +192,9 @@ async def handle_connection(websocket) -> None:
             
             response = {}
             
+            for i in data:
+                print(i, ", type: ", type(i))
+            
             if message['type'] == msgtype.order:
                 # Process the incoming order
                 if not await order_process.start(message["option"], websocket):
