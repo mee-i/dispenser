@@ -181,7 +181,7 @@ class order_process_system:
         while check_cup_proximity() and not done():
             await asyncio.sleep(min(get_remaining_duration(), proximity_sensing_interval))
             # self.remaining_duration = get_remaining_duration()
-            print("Remaining:", self.remaining_duration, "s")
+            print("Remaining:", get_remaining_duration(), "s")
             
         selected_motor.off() # turn off the motor
         led.off()
@@ -189,6 +189,7 @@ class order_process_system:
         is_dispensing = False
         if not done():
             self.remaining_duration = get_remaining_duration()
+            return
         
         # Zero means the menu is done dispensed
         self.remaining_duration = 0.0
